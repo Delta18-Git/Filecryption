@@ -9,8 +9,6 @@ FileNode *file_tree_create(const char *path, int show_hidden) {
   FileNode *node = (FileNode *)malloc(sizeof(FileNode));
 
   if (!node) {
-    // fprintf(stderr, "Memory allocation failed for FileNode for path: %s\n",
-    // path);
     return NULL;
   }
 
@@ -67,19 +65,12 @@ FileNode *file_tree_create(const char *path, int show_hidden) {
           if (node->num_children < MAX_CHILDREN) {
             node->children[node->num_children++] = child;
           } else {
-            // fprintf(stderr,
-            // "Warning: Maximum children (%d) reached for directory "
-            // "'%s'. Skipping further entries.\n",
-            // MAX_CHILDREN, node->path);
             free(child);
             break;
           }
         }
       }
       closedir(dir);
-    } else {
-      // fprintf(stderr, "Warning: Could not open directory '%s' for"
-      // "reading.\n", path);
     }
   }
   return node;
@@ -89,7 +80,7 @@ void file_tree_destroy(FileNode *node_to_destroy) {
   if (!node_to_destroy) {
     return;
   }
-  // recursively destroy all children nodes
+  // recursively destroy all child nodes
   for (int i = 0; i < node_to_destroy->num_children; i++) {
     file_tree_destroy(node_to_destroy->children[i]);
     node_to_destroy->children[i] = NULL;

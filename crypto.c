@@ -18,15 +18,13 @@ int crypto_encrypt_file(const char *src, const char *dest,
                         const char *password) {
   FILE *src_file = fopen(src, "rb");
   if (!src_file) {
-    // perror("Error opening source file for encryption");
-    return CRYPTO_ERROR_FILE;
+    return CRYPTO_ERROR_FILE; // error opening source file for encryption
   }
 
   FILE *dest_file = fopen(dest, "wb");
   if (!dest_file) {
     fclose(src_file);
-    // perror("Error opening destination file for encryption");
-    return CRYPTO_ERROR_FILE;
+    return CRYPTO_ERROR_FILE; // error opening destination file for encryption
   }
 
   unsigned char salt[crypto_pwhash_SALTBYTES];
@@ -36,7 +34,6 @@ int crypto_encrypt_file(const char *src, const char *dest,
   if (crypto_derive_key(key, sizeof(key), password, salt) != 0) {
     fclose(dest_file);
     fclose(src_file);
-    // perror("Unable to derive key");
     return CRYPTO_ERROR_ENC; // unable to derive key
   }
 
@@ -78,22 +75,19 @@ int crypto_decrypt_file(const char *src, const char *dest,
                         const char *password) {
   FILE *src_file = fopen(src, "rb");
   if (!src_file) {
-    // perror("Error opening source file for decryption");
-    return CRYPTO_ERROR_FILE;
+    return CRYPTO_ERROR_FILE; // error opening source file for decryption
   }
 
   FILE *dest_file = fopen(dest, "wb");
   if (!dest_file) {
     fclose(src_file);
-    // perror("Error opening destination file for decryption");
-    return CRYPTO_ERROR_FILE;
+    return CRYPTO_ERROR_FILE; // error opening destination file for decryption
   }
 
   unsigned char salt[crypto_pwhash_SALTBYTES];
   if (fread(salt, 1, sizeof(salt), src_file) != sizeof(salt)) {
     fclose(src_file);
     fclose(dest_file);
-    // perror("Incomplete salt in source file, corruption");
     return CRYPTO_ERROR_DEC; // incomplete salt
   }
 
@@ -101,7 +95,6 @@ int crypto_decrypt_file(const char *src, const char *dest,
   if (crypto_derive_key(key, sizeof(key), password, salt) != 0) {
     fclose(dest_file);
     fclose(src_file);
-    // perror("Unable to derive key");
     return CRYPTO_ERROR_DEC; // unable to derive key
   }
 
@@ -118,7 +111,6 @@ int crypto_decrypt_file(const char *src, const char *dest,
       0) {
     fclose(src_file);
     fclose(dest_file);
-    // perror("Corrupted header in source file");
     return CRYPTO_ERROR_DEC; // corrupted header
   }
 
@@ -141,19 +133,16 @@ int crypto_decrypt_file(const char *src, const char *dest,
             bytes_read, AAD_STRING, AAD_STRING_LEN) != 0) {
       fclose(src_file);
       fclose(dest_file);
-      // perror("Corrupted chunk in file");
       return CRYPTO_ERROR_DEC; // corrupted chunk
     }
 
     if (tag == crypto_secretstream_xchacha20poly1305_TAG_FINAL && !eof) {
       fclose(src_file);
       fclose(dest_file);
-      // perror("End of stream reached before end of file");
       return CRYPTO_ERROR_DEC; // end of stream before the end of the file
     } else if (tag != crypto_secretstream_xchacha20poly1305_TAG_FINAL && eof) {
       fclose(src_file);
       fclose(dest_file);
-      // perror("End of file reached before end of stream");
       return CRYPTO_ERROR_DEC; // end of file before the end of the stream
     }
 
