@@ -55,7 +55,12 @@ FileNode *file_tree_create(const char *path, int show_hidden) {
         if (strcmp(path, "/") == 0) {
           snprintf(child_path, MAX_PATH_LENGTH, "/%s", entry->d_name);
         } else {
-          snprintf(child_path, MAX_PATH_LENGTH, "%s%s", path, entry->d_name);
+          int path_len = strlen(path);
+          if (path[path_len - 1] == '/') { // prevents double addition of '/'
+            snprintf(child_path, MAX_PATH_LENGTH, "%s%s", path, entry->d_name);
+          } else {
+            snprintf(child_path, MAX_PATH_LENGTH, "%s/%s", path, entry->d_name);
+          }
         }
         child_path[MAX_PATH_LENGTH - 1] = '\0';
 
