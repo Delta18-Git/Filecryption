@@ -119,7 +119,7 @@ FileNode *file_tree_get_by_index(FileNode *root, int index, int *num_visited) {
     return root;
   }
 
-  // add current node to number fo visited nodes
+  // add current node to number to visited nodes
   (*num_visited)++;
 
   for (int i = 0; i < root->num_children; i++) {

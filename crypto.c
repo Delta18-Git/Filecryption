@@ -102,7 +102,6 @@ int crypto_decrypt_file(const char *src, const char *dest,
   if (fread(header, 1, sizeof(header), src_file) != sizeof(header)) {
     fclose(src_file);
     fclose(dest_file);
-    // perror("Incomplete header in source file, corruption");
     return CRYPTO_ERROR_DEC; // incomplete header
   }
 

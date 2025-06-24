@@ -253,7 +253,7 @@ void tui_display_message(const char *message, int message_type) {
             "Press any key to continue");
 
   wrefresh(message_win);
-  getch(); // wait for keypress
+  getch(); // wait for key-press
 
   delwin(message_win);
   message_win = NULL;
@@ -369,12 +369,12 @@ const char *get_common_file_type(FileNode *node) {
 
   magic_t magic_cookie = magic_open(MAGIC_SYMLINK);
   if (magic_cookie == NULL) {
-    // Failed to initialize libmagic
+    // failed to initialize libmagic
     return default_type_on_error;
   }
 
   if (magic_load(magic_cookie, NULL) != 0) {
-    // Failed to load magic database
+    // failed to load magic database
     magic_close(magic_cookie);
     return default_type_on_error;
   }
@@ -383,7 +383,7 @@ const char *get_common_file_type(FileNode *node) {
 
   if (full_type != NULL) {
     strncpy(type_buffer, full_type, sizeof(type_buffer) - 1);
-    type_buffer[sizeof(type_buffer) - 1] = '\0'; // Ensure null-termination
+    type_buffer[sizeof(type_buffer) - 1] = '\0'; // ensure null-termination
 
     char *comma = strchr(type_buffer, ',');
     if (comma != NULL) {
@@ -633,7 +633,6 @@ FileNode *tui_get_file_browser_selection(FileNode *root) {
       tui_draw_layout();
       return NULL;
     case KEY_RESIZE: // terminal resized
-      // werase(browser_win);
       tui_resize_handler();
       max_y = getmaxy(browser_win);
       break;
